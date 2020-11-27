@@ -11,10 +11,10 @@
 
 <script>(function (n, t, i, r) {
         var u, f; n[i] = n[i] || {}, n[i].initial
-            = { accountCode: "SANJO11111", host: "SANJO11111.pcapredict.com" }, n[i].on = n[i].on || function ()
+            = { accountCode: "YourAccountCode", host: "YourAccountCode.pcapredict.com" }, n[i].on = n[i].on || function ()
             { (n[i].onq = n[i].onq || []).push(arguments) }, u = t.createElement("script"),
             u.async = !0, u.src = r, f = t.getElementsByTagName("script")[0], f.parentNode.insertBefore(u, f)
-    })(window, document, "pca", "//SANJO11111.pcapredict.com/js/sensor.js")</script>
+})(window, document, "pca", "//YourAccountCode.pcapredict.com/js/sensor.js")</script>
 
 
 @if (Model.DataSourceItem != null || Html.Sxa().IsEdit)
@@ -76,7 +76,7 @@
         ];
 
         
-        var options = { key: "ER93-CZ22-FB57-WZ12", countries: { codesList: "USA" }, setCountryByIP: false }
+        var options = { key: "APIKeyReadFromSitecore", countries: { codesList: "USA" }, setCountryByIP: false }
        
 
         var control = new pca.Address(fields, options);
