@@ -1,0 +1,100 @@
+﻿@using Sitecore.XA.Foundation.SitecoreExtensions.Extensions
+@using Sitecore.XA.Foundation.MarkupDecorator.Extensions
+@using Sitecore.XA.Foundation.RenderingVariants.Extensions
+@using Sitecore.XA.Foundation.RenderingVariants.Fields
+@using Sitecore.XA.Foundation.Variants.Abstractions.Fields
+@using Sitecore.Mvc
+@model AddressValidation.PageContent.Models.AddressRenderingModel
+
+<link rel="stylesheet" type="text/css" href="https://services.postcodeanywhere.co.uk/css/address-3.91.css" />
+<script type="text/javascript" src="https://services.postcodeanywhere.co.uk/js/address-3.91.js"></script>
+
+<script>(function (n, t, i, r) {
+        var u, f; n[i] = n[i] || {}, n[i].initial
+            = { accountCode: "SANJO11111", host: "SANJO11111.pcapredict.com" }, n[i].on = n[i].on || function ()
+            { (n[i].onq = n[i].onq || []).push(arguments) }, u = t.createElement("script"),
+            u.async = !0, u.src = r, f = t.getElementsByTagName("script")[0], f.parentNode.insertBefore(u, f)
+    })(window, document, "pca", "//SANJO11111.pcapredict.com/js/sensor.js")</script>
+
+
+@if (Model.DataSourceItem != null || Html.Sxa().IsEdit)
+{
+    <div @Html.Sxa().Component("address", Model.Attributes)>
+        <div class="component-content">
+            <section class="container component-hero">
+                <div class="hero-container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8">
+                            <div class="hero-title">
+
+                                <div class="row">
+                                    <label>@Model.Addressline1</label>
+                                    <input type="text" id="txtAddress1" />
+                                </div>
+                                <div class="row">
+                                    <label>@Model.Addressline2</label>
+                                    <input type="text" id="txtAddress2" />
+                                </div>
+                                <div class="row">
+                                    <label>@Model.Country</label>
+                                    <input type="text" id="txtCountry" />
+                                </div>
+                                <div class="row">
+                                    <label>@Model.State</label>
+                                    <input type="text" id="txtState" />
+                                </div>
+                                <div class="row">
+                                    <label>@Model.City</label>
+                                    <input type="text" id="txtCity" />
+                                </div>
+
+                                <div class="row">
+                                    <label>@Model.ZipCode</label>
+                                    <input type="text" id="txtZip" />
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+}
+
+
+    <script>
+
+        var fields = [
+            { element: "txtAddress1", field: "Line1" },
+            { element: "txtAddress2", field: "Line2", mode: pca.fieldMode.POPULATE },
+            { element: "txtCity", field: "City", mode: pca.fieldMode.POPULATE },
+            { element: "txtState", field: "Province", mode: pca.fieldMode.POPULATE },
+            { element: "txtCountry", field: "CountryName", mode: pca.fieldMode.POPULATE },
+            { element: "txtZip", field: "PostalCode" },
+        ];
+
+        
+        var options = { key: "ER93-CZ22-FB57-WZ12", countries: { codesList: "USA" }, setCountryByIP: false }
+       
+
+        var control = new pca.Address(fields, options);
+        control.listen("load", function () {
+            control.setCountry("USA");
+        });
+        pca.on("options", function (type, key, options) {
+            options.suppressAutocomplete = false;
+        });
+        function blockDisAllowedCharacters(e) {
+            var that = $(event.currentTarget);
+            var regex = new RegExp(that.attr('data-val-regex-pattern'));
+            if (!regex.test(that.val() + event.key)) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+
+    </script>

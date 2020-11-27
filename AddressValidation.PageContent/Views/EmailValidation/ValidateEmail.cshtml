@@ -1,0 +1,104 @@
+﻿@using Sitecore.XA.Foundation.SitecoreExtensions.Extensions
+@using Sitecore.XA.Foundation.MarkupDecorator.Extensions
+@using Sitecore.XA.Foundation.RenderingVariants.Extensions
+@using Sitecore.XA.Foundation.RenderingVariants.Fields
+@using Sitecore.XA.Foundation.Variants.Abstractions.Fields
+@using Sitecore.Mvc
+@model AddressValidation.PageContent.Models.EmailRenderingModel
+
+<link rel="stylesheet" type="text/css" href="https://services.postcodeanywhere.co.uk/css/address-3.91.css" />
+<script type="text/javascript" src="https://services.postcodeanywhere.co.uk/js/address-3.91.js"></script>
+
+<script>
+    (function (n, t, i, r) {
+        var u, f; n[i] = n[i] || {}, n[i].initial
+            = { accountCode: "SANJO11111", host: "SANJO11111.pcapredict.com" }, n[i].on = n[i].on || function () { (n[i].onq = n[i].onq || []).push(arguments) }, u = t.createElement("script"),
+            u.async = !0, u.src = r, f = t.getElementsByTagName("script")[0], f.parentNode.insertBefore(u, f)
+    })(window, document, "pca", "//SANJO11111.pcapredict.com/js/sensor.js")</script>
+
+@if (Model.DataSourceItem != null || Html.Sxa().IsEdit)
+{
+    <div @Html.Sxa().Component("email", Model.Attributes)>
+        <div class="component-content">
+            <section class="container component-hero">
+                <div class="hero-container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8">
+                            <div class="hero-title">
+                                <div class="row">
+                                    <label>@Model.Email</label>
+                                    <input type="text" id="txtEmail" />
+                                </div>
+                                <div class="row">
+                                    <span id="error-message"></span>
+                                </div>
+                                <div class="row">
+                                    <input type="button" onclick="validateEmail()" id="btnsubmit" value="Validate" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+}
+
+
+<script>
+    function validateEmail() {
+        var Email = document.getElementById("txtEmail").value;
+        if (Email === "") {
+            return;
+        }
+        var Key = "ER93-CZ22-FB57-WZ12";
+        var Timeout = "1500";
+        var url = "https://services.postcodeanywhere.co.uk/EmailValidation/Interactive/Validate/v2.00/json3.ws";
+
+        var params = '';
+        params += "&Key=" + encodeURIComponent(Key);
+        params += "&Email=" + encodeURIComponent(Email);
+        params += "&Timeout=" + encodeURIComponent(Timeout);
+        var http = new XMLHttpRequest();
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
+                var response = JSON.parse(http.responseText);
+
+                if (response.Items.length == 1 && typeof (response.Items[0].Error) != "undefined") {
+                    //console.log(response.Items[0].Description);
+                }
+                else {
+
+                    if (response.Items.length == 0) {
+                        //console.log("Sorry, there were no results");
+                    }
+                    else {
+                        var res = response.Items[0];
+                        var nl = "\r\n";
+                        var result =
+                            "Domain: " + res.Domain + nl +
+                            "Email Address: " + res.EmailAddress + nl +
+                            "Response Code: " + res.ResponseCode + nl +
+                            "Response: " + res.ResponseCode;
+                        if (res.ResponseCode === 'Invalid' || res.ResponseCode === 'Timeout') {
+                            document.getElementById('error-message').innerHTML = "Email domain is invalid";
+                            //$('#btnsubmit').prop('disabled', true);
+                            alert("Error");
+                        }
+                        else {
+                            //$('#btnsubmit').prop('disabled', false);
+                            alert("Success");
+                        }
+                        // console.log(result);
+                    }
+                }
+            }
+        }
+        http.send(params);
+        return;
+    }
+</script>
+
+
